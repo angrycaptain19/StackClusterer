@@ -1,9 +1,10 @@
 """
 Author : Zipiao Wan
 Email  : wanzipiao@bytedance.com
-Date   : 3.3.2021
+Date   : 3.4.2021
 Version: alpha 0.0.1
 Usage  : Convert json styled fd_leak upload log into mapping clustered by stack-trace and count.
+Powered by C&C
 """
 import os
 import json
@@ -63,6 +64,26 @@ class FdClusterer(object):
                 except:
                     print("Something went wrong... TAT ...")
 
+    def get_header(self):
+        if not self._leak_log_header:
+            return "EMPTY HEADER: Error or uninitialized. Check call sequence."
+        try:
+            header_dict = self._leak_log_header["header"]
+            # pprint.pprint(header_dict)
+            return header_dict
+        except:
+            print("Something went wrong getting the header dict...orz")
+
+    def get_fd_list(self):
+        if not self._leak_log_header:
+            return "EMPTY HEADER: Error or uninitialized. Check call sequence."
+        try:
+            fd_list = self._leak_log_header["custom_long"]
+            # pprint.pprint(fd_list)
+            return fd_list
+        except:
+            print("Something went wrong getting the fd list...orz")
+
     def get_top_k_stack_hash(self, k):
         k = min(k, len(self._cluster_mapping))
         assert(k > 0)
@@ -99,8 +120,13 @@ class FdClusterer(object):
 
 
 if __name__ == '__main__':
-    file_path = os.path.curdir + "/log/leak.log"
+    file_path = os.path.curdir + "/log/leak-r11s.log"
     clusterer = FdClusterer(file_path)
     clusterer.get_top_k_stack_hash(5)
-    pprint.pprint(clusterer.get_dictionary_map())
+    print("Printing Header Dict: ")
+    pprint.pprint(clusterer.get_header())
+    print("Printing FD List: ")
+    pprint.pprint(clusterer.get_fd_list())
+    pprint.pprint(clusterer.get_dictionary_map(False))
+
 
