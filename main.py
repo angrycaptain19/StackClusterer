@@ -20,7 +20,7 @@ class FdClusterer(object):
     def __init__(self, path):
         self._file_path = path
         self._cluster_mapping = dict()
-        self._stack_hash_mapping = dict()
+        self._stack_hash_mapping = {}
         self._json_instance = None
         self._leak_log_header = None
         self.__init_json()
@@ -68,9 +68,8 @@ class FdClusterer(object):
         if not self._leak_log_header:
             return "EMPTY HEADER: Error or uninitialized. Check call sequence."
         try:
-            header_dict = self._leak_log_header["header"]
             # pprint.pprint(header_dict)
-            return header_dict
+            return self._leak_log_header["header"]
         except:
             print("Something went wrong getting the header dict...orz")
 
@@ -78,9 +77,8 @@ class FdClusterer(object):
         if not self._leak_log_header:
             return "EMPTY HEADER: Error or uninitialized. Check call sequence."
         try:
-            fd_list = self._leak_log_header["custom_long"]
             # pprint.pprint(fd_list)
-            return fd_list
+            return self._leak_log_header["custom_long"]
         except:
             print("Something went wrong getting the fd list...orz")
 
